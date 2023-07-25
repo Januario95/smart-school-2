@@ -1,0 +1,257 @@
+{% extends "pages/admin/teacher_attedances_page.html" %}
+{% load format_words %}
+
+{% block title %}
+	<title>Ver Presença de Professores</title>
+{% endblock %}
+
+{% block inner_style %}
+	<style>
+		.active-teacher-attendance-link {
+			border: 1px solid #46ACC2;
+			background-color: #46ACC2 !important;
+			color: white !important;
+			font-size: 13px !important;
+		}
+		.active-link-student {
+			/*font-weight: bold;*/
+			background-color: #46ACC2 !important;
+			color: white !important;
+			font-size: 13px !important;
+		}
+	</style>
+{% endblock %}
+
+{% block attendance_result_section %}
+	<span class="error-result"></span>
+	<form method="post" class="filter-section">
+		<div class="row">
+			<label for="id_year">Year</label>
+			{{ form.year }}
+		</div>
+		<div class="row">
+			<label for="id_semester">Semester</label>
+			{{ form.semester }}
+		</div>
+		<div class="row">
+			<label value="default">Classe</label>
+			{{ form.classe }}
+		</div>
+		<div class="row">
+			<label value="default">Turma</label>
+			{{ form.turma }}
+		</div>
+		<div class="row">
+			<label for="id_from_">De</label>
+			{{ form.from_ }}
+		</div>
+		<div class="row">
+			<label for="id_to_">Até</label>
+			{{ form.to_ }}
+		</div>
+		<div class="row">
+			{% csrf_token %}
+			<label style="color: #F6FBFB;">.</label>
+			<input type="submit" class="btn" value="Pesquisar">
+		</div>
+	</form>
+
+	<div class="result-section">
+		{% if attendances %}
+			{% if attendances_exists %}
+				<h4>
+					Presenças de Professores nas Aulas
+				</h4>
+				<table>
+					<thead>
+						<tr>
+							<th style="text-align:left;padding-left:10px;border-top-left-radius:35px;border-bottom-left-radius:35px;">Nome</th>
+							<th style="text-align:center;">Disciplina</th>
+							<th style="text-align:center;">Dia da aula</th>
+							<th style="text-align:center;">
+								Hora da aula
+							</th>
+							<th style="text-align:center;border-top-right-radius:35px;border-bottom-right-radius:35px;">Lecionou</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for row in attendances  %}
+							{% for attendance in row %}
+								<tr class="tr-tbody">
+									<td style="padding-left:10px;">
+										<a href="{% url 'app2:teacher_personal_details' attendance.teacher.pk %}">
+											{{ attendance.teacher.fullname }}
+										</a>
+									</td>
+									<td style="text-align:center;">{{ attendance.subject }}</td>
+									<td style="text-align:center;">{{ attendance.class_date }}</td>
+									<td style="text-align:center;">{{ attendance.class_time }}</td>
+									<td style="text-align:center;">
+										{% if attendance.attended %}
+											<span style="color:teal;font-weight:bold;">Sim</span>
+										{% else %}
+											<span style="color:red;font-weight:bold;">Nao</span>
+										{% endif %}
+									</td>
+								</tr>
+							{% endfor %}
+						{% endfor %}
+					</tbody>
+				</table>
+			{% else %}
+				<span class="no-result">
+					Nao foi encontrada actividade académica.
+				</span>
+			{% endif %}
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>
+		urls2 = ['professores-presencas-actualizar', 'professores-presencas-ver'];
+		// console.log(urls2);
+
+		checkActiveLink();
+		function checkActiveLink() {	
+			for (let url of urls2) {
+				// console.log(localhost + url, localhost + url + '/' === window.location.href)
+				// console.log(document.querySelector(`.${url}`));
+				// console.log(localhost + url, localhost + url + '/')
+
+				if (localhost + url + '/' === window.location.href) {
+					let currentURL = document.querySelector(`.${url}`);
+					currentURL.classList.add('active-teacher-attendance-link');
+					let header = document.querySelector('.professores');
+					header.classList.add('active-link');
+					let subHeader = document.querySelector('.professores-presencas');
+					subHeader.classList.add('active-link-student');
+				} else {
+					let currentURL = document.querySelector(`.${url}`);
+					currentURL.classList.remove('active-teacher-attendance-link');
+				}
+			}
+		}
+
+		let from_ = document.getElementById('id_from_');
+		let to_ = document.getElementById('id_to_');
+		let error = document.querySelector('.error-result');
+		to_.addEventListener('change', e => {
+			let from_date = from_.value;
+			let [year, month, day] = from_date.split('-');
+			from_date = new Date(year, month, day);
+
+			let [year2, month2, day2] = e.target.value.split('-');
+			let to_date = new Date(year2, month2, day2);
+
+			if (from_date > to_date) {
+				error.textContent = 'Data de inicio deve ser menor que data de termino';
+				error.classList.add('error');
+			} else {
+				error.textContent = '';
+				error.classList.remove('error');
+			}
+		});
+
+		from_.addEventListener('change', e => {
+			let to_date = to_.value;
+			let [year, month, day] = to_date.split('-');
+			to_date = new Date(year, month, day);
+			
+			let [year2, month2, day2] = e.target.value.split('-');
+			let from_date = new Date(year2, month2, day2);
+
+			if (to_date < from_date) {
+				error.textContent = 'Data de inicio deve ser menor que data de termino';
+				error.classList.add('error');
+			} else {
+				error.textContent = '';
+				error.classList.remove('error');
+			}
+		});
+
+		function formatDate(time) {
+			if (parseInt(time) < 10) {
+				time = '0' + time;
+			}
+			return time;
+		}
+
+		let MONTHS = {
+			'1': 'Janeiro', '2': 'Fevereiro',  '3': 'Março', 
+			'4': 'Abril', '5': 'Maio', '6': 'Junho', 
+			'7': 'Julho',  '8': 'Augusto', '9': 'Setembro',
+			'10': 'Outubro', '11': 'Novembro','12': 'Dezembro'
+		}
+
+		function setMonth(value) {
+			let time = parseInt(value) + 1;
+			if (time < 10) {
+			 	time = time;
+			}
+			// time = MONTHS[time];
+			// console.log(time);
+			return time;
+		}
+
+		let month = document.getElementById('id_month');
+		let today = new Date();
+		month.value = setMonth(today.getMonth());
+		
+		let classDates = document.querySelectorAll('.class-date');
+		for (let classDate of classDates) {
+			// let today = new Date();
+			today = today.getFullYear() + '-' + formatDate(today.getMonth()) + '-' + formatDate(today.getDate());
+			classDate.value = today;
+		}
+		
+
+		let classTimes = document.querySelectorAll('.class-time');
+		for (let classTime of classTimes) {
+			// let today = new Date();
+			now = formatDate(today.getHours()) + ':' + formatDate(today.getMinutes()) + ':' + formatDate(today.getSeconds());
+			classTime.value = now;
+		}
+
+		MONTHS = {
+			'00': 'Janeiro', '01': 'Fevereiro',  '02': 'Março', 
+			'03': 'Abril', '04': 'Maio', '05': 'Junho', 
+			'06': 'Julho',  '07': 'Augusto', '08': 'Setembro',
+			'09': 'Outubro', '10': 'Novembro','11': 'Dezembro'
+		}
+
+		function formatDateAttended(date) {
+			date = date.split('-');
+			let year, month, day;
+			year = date[0];
+			month = MONTHS[date[1]]
+			day = date[2];
+			return day + ' de ' + month + ' de ' + year;
+		}
+
+		function updateTeacherAttendance(teacherName, teacherPk, classeName, turmaName) {
+			let classDate = document.getElementById(`class-date-${ teacherPk }`);
+			let classTime = document.getElementById(`class-time-${ teacherPk }`);
+			let attendedClass = document.getElementById(`attended-class-${ teacherPk }`);
+			let subjectName = document.getElementById(`teacher-subject-${ teacherPk }`);
+
+			let attended;
+			if (parseInt(attendedClass.value) == 1) {
+				attended = 'deu';
+			} else {
+				attended = 'nao deu'
+			}
+			let text = `Confirma que o professor ${ teacherName } ${ attended } aulas no dia ${ formatDateAttended(classDate.value) } na disciplina de ${ subjectName.value }?`
+			let confirm_ = window.confirm(text);
+
+			
+			fetch(`/capture_teacher_attendance_api/${teacherPk}/${classDate.value}/${classTime.value}/${attendedClass.value}/${classeName}/${turmaName}/`)
+				.then(res => res.json())
+				.then(data => {
+					// console.log(data);
+				})
+				.catch(err => console.error(err));
+		}
+	</script>
+{% endblock %}
+

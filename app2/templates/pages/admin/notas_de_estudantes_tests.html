@@ -1,0 +1,409 @@
+{% extends "baseAdmin.html" %}
+{% load format_words %}
+
+{% block title %}
+	<title>Testes</title>
+{% endblock %}
+
+{% block style %}
+	<style> 
+		.student-page {
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			align-items: flex-start;
+			margin-top: 20px;
+		}
+		.left-section {
+			width: 25%;
+			max-width: 250px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			background-color: white;
+			padding: 10px;
+			border: 1px solid #ccc;
+		}
+		.left-section a {
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-start;
+			width: 97%;
+			font-size: 13px !important;
+			text-decoration: none;
+			background-color: #F6FBFB;
+
+			color: black;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			padding-left: 10px;
+			text-decoration: none;
+			border-bottom: 1px solid #ccc;
+		}
+
+		.right-section {
+			width: 68%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			background-color: white;
+			padding: 10px;
+			border-radius: 36px;
+		}
+		.attendance-link-option {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 10px;
+		}
+		.attendance-link-option a {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 90px;
+			padding: 6px 7px;
+			border: 1px solid #ccc;
+			text-decoration: none;
+			font-size: 13px;
+			color: black;
+			background-color: #F6FBFB;
+		}
+		.active-link-section {
+			background-color: #d1d5da;
+		}
+		.non-active-link-section {
+			background-color: #f6f6f7;
+		}
+
+
+		
+		select,
+		input[type="text"],
+		input[type="submit"],
+		#id_password {
+            height: 26px;
+            width: 100%;
+			min-width: 100px;
+            border-radius: 17px;
+            border: 1px solid #ccc;
+            text-align: center;
+            outline: none;
+        }
+		input[type="submit"] {
+			cursor: pointer;
+		}
+		select:focus,
+		input[type="text"]:focus,
+		input[type="submit"]:focus,
+		#id_password:focus {
+			border: none;
+			outline: 1px solid lightblue;
+		}
+		.result-section {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 95%;
+			margin-top: 15px;
+			padding: 20px;
+			border-radius: 38px;
+			margin-bottom: 10px;
+			background-color: white;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		}
+		.result-section h4 {
+			margin: 0px 0px 10px 0px;
+		}
+		.result-section table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+		.result-section th {
+			font-size: 13px;
+		}
+		.result-section th,
+		.result-section td {
+			padding: 5px;
+		}
+		.result-section td {
+			font-size: 12px;
+		}
+		.filter-section {
+			width: 100%;
+			display: flex;
+			/*flex-direction: column;*/
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+		}
+		.row {
+			width: 15%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.parents-row {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.row label {
+			font-size: 12px;
+		}
+		.student-details {
+			font-weight: normal;
+			text-align: center;
+		}
+		.link {
+			text-decoration: none;
+		}
+		td a {
+			text-decoration: none;
+		}
+
+		.active-link-student {
+			/*font-weight: bold;*/
+			background-color: #46ACC2 !important;
+			color: white !important;
+			font-size: 13px !important;
+		}
+		.active-sublink-student {
+			color: white !important;
+			/*font-weight: bold;*/
+			background-color: #46ACC2 !important;
+		}
+
+		@media only screen and (max-width: 768px) {
+			.student-page {
+				width: 90%;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.student-page .left-section .students-link {
+				height: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+			}
+			.filter-section {
+				width: 100%;
+				height: 100px;
+				flex-direction: column;
+				flex-wrap: wrap;
+				justify-content: space-between;
+			}
+			.left-section {
+				width: 100%;
+			}
+			.right-section {
+				width: 90%;
+				margin-top: 15px;
+			}
+			.attendance-link-option {
+				margin-top: 10px;
+			}
+			.attendance-result-section {
+				width: 100%;
+			}
+
+			select,
+			input[type="text"],
+			input[type="submit"],
+			#id_password {
+				margin-top: 10px;
+				width: 100%;
+				max-width: 250px;
+				height: 25px;
+			}
+			.result-section th {
+				font-size: 11px;
+			}
+			.result-section td {
+				font-size: 10px;
+			}
+			.result-section th,
+			.result-section td {
+				padding: 4px 3px;
+			}
+		}
+		.no-result {
+			padding: 0px;
+			margin: 0px;
+			text-align: center;
+		}
+
+		/* Student details styles */
+		.student-detail {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.student-info-section {
+			width: 90%;
+		}
+		.row-detail-header {
+			border-bottom: 2px solid teal;
+		}
+
+		/* Student School details */
+		.btn, input[type="submit"] {
+			transition: all 0.15s;
+			color: white;
+			background-color: #46ACC2;
+		}
+		.btn:active, input[type="submit"]:active {
+			transform: scale(1.05);
+			border: none;
+			outline: none;
+		}
+		textarea {
+            height: 56px;
+            width: 100%;
+			min-width: 90px;
+			max-width: 250px;
+            border-radius: 17px;
+            border: 1px solid #ccc;
+            text-align: center;
+            outline: none;
+			resize: none;
+        }
+
+		.highlight-semester {
+			background-color: #f1eaea;
+		}
+	</style>
+{% endblock %}
+
+{% block inner_style %}{% endblock %}
+
+{% block content %}
+	<div class="student-page">
+		<div class="left-section">
+			<a href="{% url 'app2:detalhes_do_estudante' %}" class="estudantes-detalhes" title="Click para ver lista de estudantes">
+				<span>Lista de estudantes</span>
+			</a>
+			<a href="{% url 'app2:all_students' %}" class="estudantes-todos" title="Click para ver lista de estudantes">
+				<span>Estudantes matriculados</span>
+			</a>
+			<a href="{% url 'app2:notas_de_estudantes_page' %}" class="estudantes-notas" title="Click para ver notas de estudantes">
+				<span>Notas de estudantes</span>
+			</a>
+			<a href="{% url 'app2:presenca_de_estudantes' %}" class="estudantes-presenca" title="Click para ver lista de presenças">
+				<span>Presenca nas aulas</span>
+			</a>
+			<a href="{% url 'app2:register_student' %}" class="estudantes-registar" title="Click para registar estudante">
+				<span>Registar estudante</span>
+			</a>
+			<a href="{% url 'app2:admin_regiser_student_subject' %}" class="estudantes-registar-disciplina" title="Click para registar disciplina">
+				Adicionar disciplina
+			</a>
+		</div>
+		<div class="right-section">
+			<div class="attendance-link-option">
+				<a href="{% url 'app2:notas_de_estudantes_page' %}" class="estudantes-notas" style="border-top-left-radius:16px;border-bottom-left-radius:16px;">
+					Testes
+				</a>
+				<a href="{% url 'app2:notas_de_estudantes_tests' %}" class="estudantes-testes" style="border-top-right-radius:16px;border-bottom-right-radius:16px;">
+					Medias
+				</a>
+			</div>
+			<div class="attendance-result-section">
+				{% block attendance_result_section %}
+					<form method="post" class="filter-section">
+						<div class="row">
+							<label for="id_year">Year</label>
+							{{ form.year }}
+						</div>
+						<div class="row">
+							<label for="id_semester">Semester</label>
+							{{ form.semester }}
+						</div>
+						<div class="row">
+							<label value="default">Classe</label>
+							{{ form.classe }}
+						</div>
+						<div class="row">
+							<label value="default">Turma</label>
+							{{ form.turma }}
+						</div>
+						<div class="row">
+							<label for="id_gender">Genero</label>
+							{{ form.gender }}
+						</div>
+						<div class="row">
+							{% csrf_token %}
+							<label style="color: #F6FBFB;">.</label>
+							<input type="submit" class="btn" value="Pesquisar">
+						</div>
+					</form>
+				{% endblock %}
+			</div>
+		</div>		
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>		
+		let marks = document.querySelectorAll('.mark');
+        for (let mark of marks) {
+			mark.style.fontWeight = 'bold';
+			if (parseFloat(mark.textContent) < 9) {
+				mark.style.color = 'red';
+			} else {
+				mark.style.color = 'teal';
+			}
+        }
+
+		//let allTrs = $('.tr-tbody');
+		//allTrs.click(function() {
+		//	this.toggleClass('hide-tr');
+		//})
+		let allTrs = document.querySelectorAll('.tr-tbody');
+		for (let tr of allTrs) {
+			tr.addEventListener('click', e => {
+				if (tr.classList.contains('highlight-tr')) {
+					tr.classList.remove('highlight-tr');
+				} else {
+					tr.classList.add('highlight-tr');
+				}
+			});
+		}
+
+		let urls1 = ['estudantes-detalhes', 'estudantes-todos', 'estudantes-testes',
+					 'estudantes-presenca', 'estudantes-registar', 'estudantes-registar-disciplina'];
+		let tag = document.querySelector('.estudantes-notas');
+		tag.classList.add('active-link-student');
+
+		checkActiveLink();
+		function checkActiveLink() {	
+			for (let url of urls1) {
+				// console.log(localhost + url, localhost + url + '/' === window.location.href)
+				// console.log(document.querySelector(`.${url}`));
+				// console.log(localhost + url, localhost + url + '/')
+
+				if (localhost + url + '/' === window.location.href) {
+					let currentURL = document.querySelectorAll(`.${url}`);
+					for (let currUrl of currentURL) {
+						currUrl.classList.add('active-link-student');
+					}
+					let header = document.querySelector('.estudantes');
+					header.classList.add('active-link');
+				} else {
+					let currentURL = document.querySelector(`.${url}`);
+					currentURL.classList.remove('active-link-student');
+				}
+			}
+		}
+	</script>
+{% endblock %}
+

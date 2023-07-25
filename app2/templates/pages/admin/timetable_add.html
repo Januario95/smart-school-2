@@ -1,0 +1,581 @@
+{% extends "baseAdmin.html" %}
+{% load format_words %}
+
+{% block title %}
+	<title>Horarios</title>
+{% endblock %}
+
+{% block style %}
+	<style> 
+		.student-page {
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			align-items: flex-start;
+			margin-top: 20px;
+		}
+		.left-section {
+			width: 25%;
+			max-width: 250px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			background-color: white;
+			padding: 10px;
+			border: 1px solid #ccc;
+		}
+		.left-section a {
+			display: flex;
+			align-items: flex-end;
+			justify-content: flex-start;
+			width: 97%;
+			font-size: 14px !important;
+			text-decoration: none;
+			background-color: #F6FBFB;
+
+			color: black;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			padding-left: 10px;
+			text-decoration: none;
+			border-bottom: 1px solid #ccc;
+		}
+
+		.right-section {
+			width: 68%;
+			display: flex;
+			flex-direction: column;
+		}
+		.active-link-section {
+			background-color: #d1d5da;
+		}
+		.non-active-link-section {
+			background-color: #f6f6f7;
+		}
+
+
+		
+		select,
+		input[type="text"],
+		input[type="time"],
+		input[type="submit"],
+		#id_password {
+            height: 26px;
+            width: 100%;
+			min-width: 90px;
+            border-radius: 17px;
+            border: 1px solid #ccc;
+            text-align: center;
+            outline: none;
+        }
+		input[type="submit"] {
+			cursor: pointer;
+		}
+		select:focus,
+		input[type="text"]:focus,
+		input[type="submit"]:focus,
+		#id_password:focus {
+			border: none;
+			outline: 1px solid lightblue;
+		}
+		.result-section {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 95%;
+			margin-top: 15px;
+			padding: 20px;
+			border-radius: 38px;
+			margin-bottom: 10px;
+			background-color: white;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		}
+		.trow-tbody {
+			border-bottom: 1px solid #ccc;
+		}
+		.result-section h4 {
+			margin: 0px 0px 10px 0px;
+		}
+		.result-section table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+		.result-section th {
+			font-size: 13px;
+		}
+		.result-section th,
+		.result-section td {
+			padding: 5px;
+		}
+		.result-section td {
+			font-size: 12px;
+		}
+		.filter-section {
+			width: 100%;
+			display: flex;
+			/*flex-direction: column;*/
+			flex-wrap: wrap;
+			justify-content: space-around;
+			align-items: center;
+		}
+		.row {
+			width: 15%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.parents-row {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.row label {
+			font-size: 12px;
+		}
+		.student-details {
+			font-weight: normal;
+			text-align: center;
+		}
+		.link {
+			text-decoration: none;
+		}
+		td a {
+			text-decoration: none;
+		}
+
+		.active-link-student {
+			background-color: #46ACC2 !important;
+			color: white !important;
+			font-size: 13px !important;
+		}
+		.active-sublink-student {
+			color: white !important;
+			/*font-weight: bold;*/
+			background-color: #46ACC2 !important;
+		}
+
+		@media only screen and (max-width: 768px) {
+			.student-page {
+				width: 100%;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.student-page .left-section {
+				
+			}
+			.student-page .left-section .students-link {
+				height: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+			}
+			.filter-section {
+				height: 100px;
+				flex-direction: column;
+				flex-wrap: wrap;
+				align-items: center;
+				justify-content: space-between;
+			}
+			.left-section {
+				width: 100%;
+			}
+			.right-section {
+				width: 90%;
+				margin-top: 15px;
+			}
+
+			select,
+			input[type="text"],
+			input[type="time"],
+			input[type="submit"],
+			#id_password {
+				width: 100px;
+				border-radius: 17px;
+				border: 1px solid #ccc;
+				text-align: center;
+				outline: none;
+				font-size: 13px;
+			}
+			.result-section th {
+				font-size: 11px;
+			}
+			.result-section td {
+				font-size: 10px;
+			}
+			.result-section th,
+			.result-section td {
+				padding: 4px 3px;
+			}
+		}
+		.no-result {
+			padding: 0px;
+			margin: 0px;
+			text-align: center;
+		}
+
+		/* Student details styles */
+		.student-detail {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.student-info-section {
+			width: 90%;
+		}
+		.student-filter-section {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.student-filter-section a {
+			color: black;
+			padding: 5px;
+			font-size: 13px;
+			text-decoration: none;
+			border: 1px solid #ccc;
+			background-color: #f6f6f7;
+		}
+		.student-personal-detail {
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.student-row-detail {
+			width: 330px;
+			display: flex;
+			flex-direction: column;
+		}
+		.row-detail-header {
+			border-bottom: 2px solid teal;
+		}
+		.student-row-detail span {
+			margin-bottom: 8px;
+			font-size: 13px;
+		}
+		.student-row-detail-left {
+			margin-right: 10px;
+		}
+		.student-row-detail-right {
+			margin-left: 10px;
+		}
+		.student-school-detail {
+			display: none;
+		}
+
+		/* Student School details */
+		.student-semester-details {
+			margin-bottom: 15px;
+		}
+		.student-personal-row {
+			margin-bottom: 25px;
+		}
+		.row-personal-header {
+			padding: 0px;
+			margin: 0px 0px 5px 0px;
+			text-align: center;
+			font-size: 17px;
+		}
+		.student-personal-left {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin-top: 15px;
+		}
+		.student-personal-left span {
+			font-size: 14px;
+		}
+		.student-name-header {
+			margin: 10px 0px 0px 0px;
+			padding: 0px;
+			font-size: 25px;
+		}
+		.ver-detalhes,
+		.ver-presenca {
+			cursor: pointer;
+			border: 1px solid #46ACC2;
+			border-radius: 16px;
+			font-size: 11px;
+			padding: 3px 5px;
+			background-color: #46ACC2;
+			color: white;
+			transition: all 0.15s;
+		}
+		.ver-detalhes:active, .ver-presenca:active {
+			transform: scale(1.07);
+		}
+		.btn, input[type="submit"] {
+			transition: all 0.15s;
+			color: white;
+			background-color: #46ACC2;
+		}
+		.btn:active, input[type="submit"]:active {
+			transform: scale(1.05);
+			border: none;
+			outline: none;
+		}
+		textarea {
+            height: 56px;
+            width: 100%;
+			min-width: 90px;
+			max-width: 250px;
+            border-radius: 17px;
+            border: 1px solid #ccc;
+            text-align: center;
+            outline: none;
+			resize: none;
+        }
+		.send-message-row {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+			margin-bottom: 8px;
+		}
+		.send-message-row .btn {
+			margin-top: 7px;
+		}
+		.mensages-sent {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			justify-content: flex-start;
+		}
+		.student-attendance {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+		}
+		.student-attendance-overall {
+			width: 100%;
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.student-test-mark {
+			margin-top: 10px;
+		}
+		.highlight-semester {
+			background-color: #f1eaea;
+		}
+		.student-test-marks {
+			margin-top: 10px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		.parent-messages-sent {
+			width: 100%;
+		}
+	</style>
+{% endblock %}
+
+{% block inner_style %}{% endblock %}
+
+{% block content %}
+	<div class="student-page">
+		<div class="left-section">
+			<a href="{% url 'app2:timetable_add' %}" class="horarios-adicionar" title="Click para adicionar horario">
+				<span>Adicionar horario</span>
+			</a>
+			<a href="{% url 'app2:timetable_view_2' %}" class="horarios-ver" title="Click para ver horario">
+				<span>Ver horario</span>
+			</a>
+		</div>
+		<div class="right-section">
+			{% block student_form %}
+				<form method="post" class="filter-section">
+					<div class="row">
+						<label for="id_year">Year</label>
+						{{ form.year }}
+					</div>
+					<div class="row">
+						<label for="id_semester">Semester</label>
+						{{ form.semester }}
+					</div>
+					<div class="row">
+						<label value="default">Selecione a classe</label>
+						{{ form.classe }}
+					</div>
+					<div class="row">
+						<label value="default">Selecione a turma</label>
+						{{ form.turma }}
+					</div>
+					<div class="row">
+						{% csrf_token %}
+						<label style="color: #F6FBFB;">.</label>
+						<input type="submit" class="btn btn-add-timetable" value="Criar">
+					</div>
+				</form>
+			{% endblock %}
+
+			{% block student_info %}
+				<div class="result-section">						
+					<table>
+						<thead>
+							<tr>
+								<th style="text-align:center;border-top-left-radius:35px;border-bottom-left-radius:35px;">
+									Inicio
+								</th>
+								<th>Fim</th>
+								<th style="text-align:center;">2ª Feira</th>
+								<th style="text-align:center;">3ª Feira</th>
+								<th style="text-align:center;">4ª Feira</th>
+								<th style="text-align:center;">5ª Feira</th>
+								<th style="text-align:center;border-top-right-radius:35px;border-bottom-right-radius:35px;">
+									6ª Feira
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for index in class_length  %}
+								<tr class="trow-tbody">
+									<td><input type="time" value="09:45" id="class-start-time-slot-{{ index }}"></td>
+									<td><input type="time" value="12:30" id="class-end-time-slot-{{ index }}"></td>
+									<td>
+										<select name="" id="monday-slot-{{ index }}">
+											{% for subject in subjects %}
+												<option value="{{ subject }}">{{ subject.name }}</option>
+											{% endfor %}
+										</select>
+									</td>
+									<td>
+										<select name="" id="tuesday-slot-{{ index }}">
+											{% for subject in subjects %}
+												<option value="{{ subject }}">{{ subject.name }}</option>
+											{% endfor %}
+										</select>
+									</td>
+									<td>
+										<select name="" id="wednesday-slot-{{ index }}">
+											{% for subject in subjects %}
+												<option value="{{ subject }}">{{ subject.name }}</option>
+											{% endfor %}
+										</select>
+									</td>
+									<td>
+										<select name="" id="thursday-slot-{{ index }}">
+											{% for subject in subjects %}
+												<option value="{{ subject }}">{{ subject.name }}</option>
+											{% endfor %}
+										</select>
+									</td>
+									<td>
+										<select name="" id="friday-slot-{{ index }}">
+											{% for subject in subjects %}
+												<option value="{{ subject }}">{{ subject.name }}</option>
+											{% endfor %}
+										</select>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			{% endblock %}
+		</div>		
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>
+		const arrayRange = (start, stop, step) =>
+			Array.from(
+				{ length: (stop - start) / step + 1 },
+				(value, index) => start + index * step
+		);
+		let range = arrayRange(1, 6, 1);
+		let year = document.getElementById('id_year');
+		let semester = document.getElementById('id_semester');
+		let classe = document.getElementById('id_classe');
+		let turma = document.getElementById('id_turma');
+		let csrfToken = "{{ csrf_token }}";
+
+		let btnAddTimetable = document.querySelector('.btn-add-timetable');
+		btnAddTimetable.addEventListener('click', e => {
+			e.preventDefault();
+			extractDataFromTable();
+		});
+
+		function extractDataFromTable() {
+			let data = [];
+			for (let index of range) {
+				let idValues = ['class-start-time-slot-', 'class-end-time-slot-',
+								'monday-slot-', 'tuesday-slot-', 'wednesday-slot-',
+								'thursday-slot-', 'friday-slot-'];
+				let row = [];
+				for (let idVal of idValues) {
+					let tag = document.getElementById(`${ idVal }${ index }`);
+					row.push(tag.value);
+				}
+				data.push(row);
+			}
+			// console.log(JSON.stringify(data, undefined, 4));
+			let schoolData = {
+				'year': year.value,
+				'semester': semester.value,
+				'classe': classe.value,
+				'turma': turma.value
+			}
+			makePOSTRequest(data, schoolData);
+		}
+
+		function makePOSTRequest(data, schoolData) {
+			fetch('/add-timetable-api/', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrfToken
+				},
+				body: JSON.stringify({
+					'data': data,
+					'schoolData': schoolData
+				})
+			})
+				.then(res => res.json())
+				.then(data => {
+					console.log(data);
+				})
+				.catch(err => console.error(err));
+		}
+
+
+		let urls1 = ['horarios-ver', 'horarios-adicionar'];
+		
+		checkActiveLink();
+		function checkActiveLink() {	
+			for (let url of urls1) {
+				// console.log(localhost + url, localhost + url + '/' === window.location.href)
+				// console.log(document.querySelector(`.${url}`));
+				// console.log(localhost + url, localhost + url + '/')
+
+				if (localhost + url + '/' === window.location.href) {
+					let currentURL = document.querySelector(`.${url}`);
+					currentURL.classList.add('active-link-student');
+					let header = document.querySelector('.horarios');
+					header.classList.add('active-link');
+				} else {
+					let currentURL = document.querySelector(`.${url}`);
+					currentURL.classList.remove('active-link-student');
+				}
+			}
+		}
+	</script>
+{% endblock %}
+

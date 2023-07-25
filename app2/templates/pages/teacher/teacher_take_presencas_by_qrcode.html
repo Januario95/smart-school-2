@@ -1,0 +1,24 @@
+{% extends "pages/teacher/teacher_take_presencas.html" %}
+{% load static %}
+
+{% block title %}
+    <title>Marcar Presenca Por List</title>    
+{% endblock %}
+
+
+{% block take_attendance %}
+	<div class="attendance-by-list">
+		<div class="qrcode-title">
+			<h4>Faça scan do QR Code para confirmar a sua presença na aula</h4>
+		</div>
+		<div class="attendance-result">
+			<img src="{% static 'mycontact2.png' %}" alt="">
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>
+		
+	</script>
+{% endblock %}
