@@ -912,7 +912,13 @@ class AddStudentMarkFromFileForm(forms.Form):
 	)
 	CLASSES = ((f'{x}ª classe', f'{x}ª Classe') for x in range(8, 13))
 	SEMESTERS = ((semester, semester) for semester in ('Primeiro', 'Segundo', 'Terceiro'))
-	TESTS = ((f'Test {x}', f'Test {x}') for x in range(1, 4))
+	# TESTS = ((f'A {x}', f'Test {x}') for x in range(1, 4))
+	TESTS = (
+		('ACS 1', 'ACS 1'),
+		('ACS 2', 'ACS 2'),
+		('ACS 3', 'ACS 3'),
+		('AT', 'AT')
+	)
 	year = forms.ChoiceField(
 		choices=YEARS
 	)

@@ -1,0 +1,11 @@
+Conta de admin:
+	- username: januario95
+	- password: Jaci1995
+Conta de professor:
+	- username: johndoe	
+	- password: Jaci1995
+Conta de estudante:
+	- username: grecichembezi
+	- password: Jaci1995
+
+	
