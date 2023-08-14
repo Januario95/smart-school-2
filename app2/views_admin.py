@@ -50,17 +50,24 @@ def navbar_view(request):
 
 def logout_page(request):
     logout(request)
-    try:
-        previous_path = request.META.get('HTTP_REFERER')
-        return redirect(previous_path)
-    except Exception as e:
-        return redirect('/entrar/')
+    # try:
+    #     previous_path = request.META.get('HTTP_REFERER')
+    #     return redirect(previous_path)
+    # except Exception as e:
+    return redirect('/entrar/')
 
 
 def login_page(request):
     message = None
     if request.user.is_authenticated:
-        return redirect('/')
+        if request.user.is_superuser:
+            return redirect('/')
+        elif request.user.is_staff:
+            user = TeacherNameNewModel.objects.get(user=request.user)
+            return redirect(f'/professor-perfil/{user.pk}/')
+        else:
+            user = StudentNameNewModel.objects.get(user=request.user)
+            return redirect(f'/estudante-perfil/{user.pk}/')
     else:
         if request.method == 'POST':
             form = LoginForm(request.POST)
@@ -156,19 +163,21 @@ def profile_view(request):
 @login_required
 def home(request):
     if request.user.is_superuser:
-        return redirect('/professores/')
+        return redirect('/perfil/')
     
     if request.user.is_staff:
-        user = request.user
-        teacher = user.teachernamenewmodel_set.first()
-        print(teacher)
+        teacher = TeacherNameNewModel.objects.get(user=request.user)
+        # teacher = user.teachernamenewmodel_set.first()
+        # print(teacher)
         return redirect(f'/professor-perfil/{ teacher.pk }/')
     else:
-        message = 'Acesso negado. Nao tem permissao para ver essa pagina'
+        student = StudentNameNewModel.objects.get(user=request.user)
+        return redirect(f'/estudante-perfil/{ student.pk }/')
+        # message = 'Acesso negado. Nao tem permissao para ver essa pagina'
 
-        return render(request,
-                        'pages/auth/unauthorized.html',
-                        {'message': message})
+        # return render(request,
+        #                 'pages/auth/unauthorized.html',
+        #                 {'message': message})
 
 
 @login_required
@@ -1845,6 +1854,8 @@ def register_student(request):
                         turma = TurmaNewModel.objects.get(name=turma)
                         classe = inner_data.get('classe')
                         classe = ClasseNewModel.objects.get(name=classe)
+                        subjects = inner_data.get('subjects')
+
                         semester = inner_data.get('semester')
                         semester = SemesterNewModel.objects.get(name=semester)
                         new_semester = SemesterModel.objects.filter(
@@ -1862,6 +1873,15 @@ def register_student(request):
                                 classe=classe,
                                 year=year
                             )
+                        for subject in subjects:
+                            subj_name = SubjectNameNewModel.objects.get(name=subject)
+                            subj = SubjectTestsNewModel.objects.create(
+                                name=subj_name
+                            )
+                            subj.save()
+                            new_semester.subjects.add(subj)
+                            new_semester.save()
+
                         student.new_semester.add(new_semester)
                         student.save()
 
@@ -1899,7 +1919,7 @@ def register_student(request):
                         mother.save()
                         student.parents.add(mother)
                         student.save()
-                        message = f'A conta para {student.fullname()} foi criada com sucesso. <a href="#">Ver detalhes</a>'
+                        message = f'A conta para {student.fullname()} foi criada com sucesso.'
             else:
                 print(form.errors)
         else:

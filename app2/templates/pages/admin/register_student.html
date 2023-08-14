@@ -225,8 +225,8 @@
             align-items: center;
             justify-content: space-between;
         }
-        .error {
-            background-color: red;
+        .account-created {
+            background-color: rgb(232, 186, 59);
             border-radius: 16px;
             padding: 4px;
             margin: 5px;
@@ -291,9 +291,9 @@
                 <h3 class="teacher-register-title" style="text-align:center;">Registar Estudante</h3>
                 <form method="post" class="box-section">
                     {% if message%}
-                        <span class="error">
+                        <span class="account-created">
                             {{ message }}
-                            <a href="#">{{ student.fullname }}</a>
+                            <a href="/estudantes-detalhes-dados-pessoais/{{ student.pk }}/">{{ student.fullname }}</a>
                         </span>
                     {% endif %}
                     <div class="teacher-personal-details form-row">
@@ -385,6 +385,10 @@
                             <div class="row">
                                 <label for="id_turma">Turma</label>
                                 {{ form.turma }}
+                            </div>
+                            <div class="row">
+                                <label for="id_subjects">Disciplinas</label>
+                                {{ form.subjects }}
                             </div>
                         </div> 
                     </div>

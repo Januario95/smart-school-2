@@ -1293,7 +1293,7 @@ def teacher_marks_add_from_file(request, teacher_pk):
                                                 subject_mark.save()
                                                 sem.subjects.add(subject_mark)
                                                 sem.save()
-                                                print('Created test mark to subjec')
+                                                print('Created test mark to subject')
                     else:
                         print(form.errors)
                         has_errors = True

@@ -380,8 +380,12 @@ def student_view_marks(request, student_pk):
                                             for index, test in enumerate(tests, start=1):
                                                 row[f'test_{index}'] = test.mark
                                                 totals.append(test.mark)
-                                            total = sum(totals) / len(totals)
-                                            row['media'] = round(total, 2)
+                                            try:
+                                                total = sum(totals) / len(totals)
+                                                row['media'] = round(total, 2)
+                                            except Exception as e:
+                                                total = 0
+                                                row['media'] = 0
                                             all_tests.append(row)
                     else: 
                         print(form.errors)

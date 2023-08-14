@@ -20,7 +20,7 @@ app_name = 'teacher_app'
 
 
 urlpatterns = [
-    path('professor/<int:teacher_pk>/', teacher_homepage, name='teacher_homepage'),
+    path('professor-perfil/<int:teacher_pk>/', teacher_homepage, name='teacher_homepage'),
     
     path('professor-presencas/<int:teacher_pk>/', teacher_presencas,  name='teacher_presencas'),
     path('professor-ver-presencas/<int:teacher_pk>/', teacher_view_attendance, name='teacher_view_attendance'),
