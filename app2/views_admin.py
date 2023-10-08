@@ -157,8 +157,22 @@ def register_page(request):
 
 @login_required
 def profile_view(request):
-    return render(request,
-                    'pages/admin/profile.html')
+    if request.user.is_superuser:
+        user = request.user
+        print(user)
+        return render(request,
+                    'pages/admin/profile.html',
+                    {'user': user})
+    else:
+        message = 'Acesso negado. Nao tem permissao para ver essa pagina.'
+        return render(request,
+					  'pages/auth/unauthorized.html',
+					  {'message': message})
+
+# @login_required
+# def profile_view(request):
+#     return render(request,
+#                     'pages/admin/profile.html')
 
 @login_required
 def home(request):

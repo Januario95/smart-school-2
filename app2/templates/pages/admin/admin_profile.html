@@ -1,4 +1,4 @@
-{% extends "baseAdmin.html" %}
+{% extends "baseStudent.html" %}
 {% load static %}
 {% load format_words %}
 
@@ -568,10 +568,10 @@
 {% block content %}
 	<div class="student-page">
 		<div class="left-section">
-			<a href="#" class="estudantes-detalhes students-link" title="Click para ver lista de estudantes">
+			<a href="{% url 'student_app:student_profile' student.pk %}" class="estudantes-detalhes students-link" title="Click para ver lista de estudantes">
 				<span>Dados Pessoais</span>
 			</a>
-			<a href="#" class="estudantes-detalhes students-link" title="Click para ver lista de estudantes">
+			<a href="{% url 'student_app:student_update_profile' student.pk %}" class="estudantes-detalhes students-link" title="Click para ver lista de estudantes">
 				<span>Actualizar conta</span>
 			</a>
 			<a href="#" class="estudantes-todos students-link" title="Click para ver lista de estudantes">
@@ -590,18 +590,25 @@
 					<div class="profile-img">
 						<img src="/media/{{ student.profile_pic }}" alt="{{ student.fullname }}" title="{{ student.fullname }}">
 					</div>
-					<span><b>Primeiro nome:</b> {{ user.first_name }}</span>
-					<span><b>Outros nomes:</b> {{ user.last_name }}</span>
-					<span><b>Email:</b> <a href="mailto:{{ student.email }}">{{ user.email }}</a></span>
+					<span><b>Primeiro nome:</b> {{ student.first_name }}</span>
+					<span><b>Outros nomes:</b> {{ student.last_name }}</span>
+					<span><b>Numero de BI:</b> {{ student.numero_de_bi }}</span>
+					<span><b>Genero:</b> {{ student.gender|format_gender }}</span>
+					<span><b>Email:</b> <a href="mailto:{{ student.email }}">{{ student.email }}</a></span>
+					<span><b>Data de nascimento:</b> {{ student.birth_date }}</span>
+					<span><b>Numero de telefone: </b>
+						<span>{{ student.phone_number }}</span>
+						<a href="tel:{{ student.phone_number }}" title="Ligar para {{ student.first_name }} {{ student.last_name }}">&phone;</a>
+					</span>
 				</div>
 				<div class="student-row-detail student-row-detail-right">
 					<div class="header-title">
 						<h5 class="row-detail-header">Endereço</h5>
 					</div>
-					<span><b>Provincia:</b> {{ user.province }}</span>
-					<span><b>Cidade:</b> {{ user.city }}</span>
-					<span><b>Bairro:</b> {{ user.bairro }}</span>
-					<span><b>Quarteirao:</b> {{ user.quarteirao }}</span>
+					<span><b>Provincia:</b> {{ student.province }}</span>
+					<span><b>Cidade:</b> {{ student.city }}</span>
+					<span><b>Bairro:</b> {{ student.bairro }}</span>
+					<span><b>Quarteirao:</b> {{ student.quarteirao }}</span>
 				</div>
 			</div>
         </div>		

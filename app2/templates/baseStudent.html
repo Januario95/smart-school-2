@@ -84,7 +84,6 @@
 		.dropdown-content {
 			display: none;
 			position: absolute;
-			background-color: #f1f1f1;
 			min-width: 100px;
 			right: -17px;
 			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -94,7 +93,7 @@
 		.dropdown-content a {
 			color: black;
 			padding: 6px;
-			text-decoration: none;
+			text-decoration: none !important;
 			display: block;
 			font-size: 13px;
 		}
@@ -134,7 +133,7 @@
 		}
 		.active-link {
 			color: white;
-			text-decoration: underline;
+			/* text-decoration: underline; */
 			font-weight: bold;
 			/*background-color: #79aec8;
 			background-color: #04AA6D;*/
@@ -289,6 +288,44 @@
 			transform: scale(1.02);
 		}
 		
+		.dropbtn {
+			color: white;
+			/* padding: 8px; */
+			font-size: 16px;
+			border: none;
+		}
+		  
+		.dropdown {
+			position: relative;
+			display: inline-block;
+		}
+		  
+		.dropdown-content {
+			display: none;
+			position: absolute;
+			background-color: #f1f1f1;
+			min-width: 160px;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+		}
+		  
+		.dropdown-content a {
+			color: black;
+			padding: 12px 16px;
+			text-decoration: none !important;
+			display: block;
+		}
+		.correctores a {
+			font-size: 12px !important;
+		}
+		  
+		.dropdown-content a:hover {
+			/* background: linear-gradient(-90deg,rgba(0,89,138,.9) 0%,rgba(4,171,148,.9) 100%); */
+			background-color: #46ACC2;
+			text-decoration: none;
+			color: white;
+		}  
+		.dropdown:hover .dropdown-content {display: block;}
 
 		@media only screen and (max-width: 768px) {
 			.Navbar {
@@ -345,13 +382,13 @@
 		function checkActiveLink(url) {
 			if (localhost + url + '/' === window.location.href) {
 				let currentURL = document.querySelector(`.dropbtn`);
-				currentURL.classList.add('active-link');
+				// currentURL.classList.add('active-link');
 			} else {
 				let currentURL = document.querySelector(`.${url}`);
-				currentURL.classList.remove('active-link');
+				// currentURL.classList.remove('active-link');
 				for (let url of urls) {
 					let currentURL = document.querySelector(`.${url}`);
-					currentURL.classList.remove('active-link');
+					// currentURL.classList.remove('active-link');
 				}
 			}
 		}

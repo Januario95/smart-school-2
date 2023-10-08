@@ -77,7 +77,7 @@ urlpatterns = [
 
 	path('registar/', register_page, name='register'),
 	path('entrar/', login_page, name='login'),
-    path('perfil/',profile_view, name='profile'),
+    path('perfil/', profile_view, name='profile'),
 	path('sair/', logout_page, name='logout'), 
 
 	path('professores-registar/', register_teacher, name='register_teacher'),

@@ -12,35 +12,30 @@
         <!-- <i class="fas fa-bars">☰</i> -->
         <span>☰</span>
     </div>
-
-    <nav class="Navbar__Items Navbar__Items--right">
+    <!--
+    <nav class="Navbar__Items">
         <div class="Navbar__Link">
-            <a class="header-link estudantes" href="{% url 'student_app:student_teachers' student.pk %}">
-                Pagina Inicial
+            <a href="{% url 'student_app:student_profile' student.pk %}" class="school-name">
+                Liceu Avicena
             </a>
         </div>
+    </nav>
+    -->
+    <nav class="Navbar__Items Navbar__Items--right">
         <div class="Navbar__Link">
-            <div class="dropdown">
-				<a href="#" class="dropbtn header-link">Meus estudos</a>
-				<div class="dropdown-content">
-					<a href="#">Aulas</a>
-					<a href="#" class="papel-commercial">Notas</a>
-					<a href="#" class="obrigacoes">Presenças</a>
-					<a href="#">Horario</a>
-				</div>
-			</div>
+            <a class="header-link estudantes" href="{% url 'student_app:student_teachers' student.pk %}">Professores</a>
         </div>
         <div class="Navbar__Link">
-            <div class="dropdown">
-				<a href="#" class="dropbtn header-link">Matriculas</a>
-				<div class="dropdown-content">
-					<a href="#">Nova</a>
-					<a href="#" class="papel-commercial">Anteriores</a>
-				</div>
-			</div>
+            <a class="header-link estudantes" href="{% url 'student_app:student_view_attendance' student.pk %}">Presencas</a>
         </div>
         <div class="Navbar__Link">
-            <a class="header-link professores" href="{% url 'student_app:student_view_marks' student.pk %}">Financas</a>
+            <a class="header-link professores" href="{% url 'student_app:student_view_marks' student.pk %}">Notas</a>
+        </div>
+        <div class="Navbar__Link">
+            <a class="header-link professores" href="#">Horario</a>
+        </div>
+        <div class="Navbar__Link">
+            <a class="header-link professores" href="#">Menssagens</a>
         </div>
         {% if request.user.is_authenticated %}
             <div class="Navbar__Link">
